@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claritas Academy — Science & Engineering, Made Clear</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0B0D;
+  --panel:#131316;
+  --panel-2:#1A1A1F;
+  --ivory:#ECE6D8;
+  --ivory-dim:#A8A296;
+  --brass:#C8A45C;
+  --brass-soft:rgba(200,164,92,.14);
+  --schematic:#7FB4C9;
+  --line:rgba(236,230,216,.10);
+  --display:'Fraunces',serif;
+  --body:'Archivo',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  color:var(--ivory);
+  font-family:var(--body);
+  font-weight:300;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--brass);color:var(--ink)}
+
+/* ---------- grain + atmosphere ---------- */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+
+.mono{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase}
+
+/* ---------- nav ---------- */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.4rem 3rem;
+  background:linear-gradient(to bottom,rgba(11,11,13,.92),rgba(11,11,13,0));
+  backdrop-filter:blur(2px);
+  transition:background .4s;
+}
+nav.scrolled{background:rgba(11,11,13,.94);border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}
+.logo{display:flex;align-items:center;gap:.7rem}
+.logo svg{width:30px;height:30px}
+.logo-name{font-family:var(--display);font-weight:500;font-size:1.15rem;letter-spacing:.02em}
+.logo-name em{font-style:italic;color:var(--brass)}
+.nav-links{display:flex;gap:2.4rem;align-items:center}
+.nav-links a{font-size:.82rem;font-weight:400;letter-spacing:.06em;color:var(--ivory-dim);transition:color .25s}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--ivory)}
+.btn{
+  display:inline-flex;align-items:center;gap:.6rem;
+  border:1px solid var(--brass);background:transparent;color:var(--brass);
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  padding:.75rem 1.5rem;border-radius:2px;
+  transition:background .3s,color .3s,transform .2s;
+}
+.btn:hover,.btn:focus-visible{background:var(--brass);color:var(--ink)}
+.btn-solid{background:var(--brass);color:var(--ink)}
+.btn-solid:hover{background:#D9B871}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+
+/* ---------- hero ---------- */
+.hero{
+  min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;
+  padding:9rem 3rem 4rem;gap:3rem;position:relative;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 75% 45%,rgba(127,180,201,.07),transparent 70%),
+             radial-gradient(ellipse 50% 40% at 20% 80%,rgba(200,164,92,.05),transparent 70%);
+}
+.hero-eyebrow{display:flex;align-items:center;gap:1rem;color:var(--brass);margin-bottom:2rem}
+.hero-eyebrow .rule{width:48px;height:1px;background:var(--brass)}
+h1{
+  font-family:var(--display);font-weight:300;
+  font-size:clamp(2.8rem,5.6vw,5.2rem);
+  line-height:1.04;letter-spacing:-.015em;
+}
+h1 .line{display:block;overflow:hidden}
+h1 .line span{display:block}
+h1 em{font-style:italic;color:var(--brass);font-weight:400}
+.hero-sub{
+  margin-top:2rem;max-width:30rem;color:var(--ivory-dim);font-size:1.05rem;font-weight:300;
+}
+.hero-ctas{margin-top:2.8rem;display:flex;gap:1rem;flex-wrap:wrap}
+.hero-meta{margin-top:3.4rem;display:flex;gap:3rem;color:var(--ivory-dim)}
+.hero-meta b{display:block;font-family:var(--display);font-weight:400;font-size:1.7rem;color:var(--ivory)}
+.hero-meta .mono{color:var(--ivory-dim);opacity:.8}
+
+/* the signature: self-drawing schematic */
+.schematic-wrap{position:relative;z-index:2}
+.schematic-wrap svg{width:100%;height:auto;display:block}
+.schematic-caption{
+  margin-top:1.2rem;display:flex;justify-content:space-between;
+  color:var(--ivory-dim);opacity:.75;
+}
+.sch-line{stroke:var(--schematic);stroke-width:1.4;fill:none;opacity:.85}
+.sch-brass{stroke:var(--brass);stroke-width:1.4;fill:none}
+.sch-faint{stroke:rgba(236,230,216,.18);stroke-width:1;fill:none}
+.sch-dot{fill:var(--brass)}
+.sch-label{font-family:var(--mono);font-size:9px;fill:var(--ivory-dim);letter-spacing:.12em}
+
+/* ---------- marquee ---------- */
+.marquee{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  overflow:hidden;padding:1.1rem 0;white-space:nowrap;
+}
+.marquee-track{display:inline-flex;gap:3.5rem;will-change:transform}
+.marquee .mono{color:var(--ivory-dim)}
+.marquee .dot{color:var(--brass)}
+
+/* ---------- sections ---------- */
+section{padding:7rem 3rem;position:relative}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;margin-bottom:3.5rem;flex-wrap:wrap}
+.kicker{display:flex;align-items:center;gap:.9rem;color:var(--brass);margin-bottom:1.1rem}
+.kicker .rule{width:36px;height:1px;background:var(--brass)}
+h2{font-family:var(--display);font-weight:300;font-size:clamp(1.9rem,3.4vw,3rem);line-height:1.1;letter-spacing:-.01em}
+h2 em{font-style:italic;color:var(--brass);font-weight:400}
+.section-head p{max-width:26rem;color:var(--ivory-dim);font-size:.95rem}
+
+/* ---------- course grid ---------- */
+.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.course-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  display:flex;flex-direction:column;position:relative;
+  transition:transform .45s cubic-bezier(.2,.8,.2,1),border-color .35s;
+}
+.course-card:hover{transform:translateY(-6px);border-color:rgba(200,164,92,.45)}
+.card-art{aspect-ratio:16/10;position:relative;overflow:hidden;background:var(--panel-2)}
+.card-art svg{position:absolute;inset:0;width:100%;height:100%}
+.card-art::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(11,11,13,.55),transparent 55%);
+}
+.play-chip{
+  position:absolute;right:1rem;bottom:1rem;z-index:2;
+  width:42px;height:42px;border-radius:50%;
+  border:1px solid rgba(236,230,216,.4);background:rgba(11,11,13,.55);
+  display:grid;place-items:center;backdrop-filter:blur(4px);
+  transition:background .3s,border-color .3s,transform .3s;
+}
+.play-chip svg{width:13px;height:13px;fill:var(--ivory);margin-left:2px}
+.course-card:hover .play-chip{background:var(--brass);border-color:var(--brass);transform:scale(1.08)}
+.course-card:hover .play-chip svg{fill:var(--ink)}
+.card-code{
+  position:absolute;left:1rem;top:1rem;z-index:2;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;color:var(--ivory);
+  background:rgba(11,11,13,.55);border:1px solid rgba(236,230,216,.18);
+  padding:.32rem .6rem;border-radius:2px;backdrop-filter:blur(4px);
+}
+.card-body{padding:1.4rem 1.4rem 1.5rem;display:flex;flex-direction:column;gap:.65rem;flex:1}
+.card-body h3{font-family:var(--display);font-weight:400;font-size:1.32rem;line-height:1.2}
+.card-body p{color:var(--ivory-dim);font-size:.88rem;flex:1}
+.card-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--line);padding-top:.95rem;margin-top:.4rem;
+  color:var(--ivory-dim);
+}
+.card-meta .lessons{color:var(--brass)}
+
+/* ---------- method ---------- */
+.method{background:var(--panel);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3rem;margin-top:1rem}
+.method-item{border-top:1px solid var(--line);padding-top:1.6rem}
+.method-item .mono{color:var(--brass);display:block;margin-bottom:1rem}
+.method-item h3{font-family:var(--display);font-weight:400;font-size:1.45rem;margin-bottom:.8rem}
+.method-item p{color:var(--ivory-dim);font-size:.92rem}
+
+/* ---------- instructor ---------- */
+.instructor{display:grid;grid-template-columns:.85fr 1.15fr;gap:4rem;align-items:center}
+.portrait{
+  position:relative;border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  aspect-ratio:4/5;background:var(--panel-2);
+}
+.portrait img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;display:block;
+  filter:saturate(.92);
+}
+.portrait svg{position:absolute;inset:0;width:100%;height:100%}
+.portrait-tag{
+  position:absolute;left:1.2rem;bottom:1.2rem;z-index:2;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ivory);background:rgba(11,11,13,.6);border:1px solid rgba(236,230,216,.2);
+  padding:.45rem .8rem;border-radius:2px;backdrop-filter:blur(4px);
+}
+.instructor-copy h2{margin-bottom:1.6rem}
+.instructor-copy p{color:var(--ivory-dim);margin-bottom:1.2rem;max-width:34rem}
+.instructor-copy blockquote{
+  font-family:var(--display);font-style:italic;font-weight:300;
+  font-size:1.5rem;line-height:1.4;color:var(--ivory);
+  border-left:1px solid var(--brass);padding-left:1.6rem;margin:2.2rem 0;
+}
+
+/* ---------- cta ---------- */
+.cta{text-align:center;padding:9rem 3rem}
+.cta h2{font-size:clamp(2.2rem,4.4vw,3.8rem);max-width:46rem;margin:0 auto 1.6rem}
+.cta p{color:var(--ivory-dim);max-width:30rem;margin:0 auto 2.6rem}
+.cta .price{font-family:var(--mono);color:var(--brass);letter-spacing:.18em;font-size:.78rem;margin-bottom:1.4rem;display:block}
+
+/* ---------- footer ---------- */
+footer{
+  border-top:1px solid var(--line);padding:3rem;display:flex;
+  justify-content:space-between;align-items:center;color:var(--ivory-dim);flex-wrap:wrap;gap:1.5rem;
+}
+footer .mono{opacity:.7}
+
+/* reveal helpers */
+.reveal{opacity:0;transform:translateY(34px)}
+
+@media (max-width:980px){
+  nav{padding:1.1rem 1.4rem}
+  .nav-links a:not(.btn){display:none}
+  .hero{grid-template-columns:1fr;padding:8rem 1.4rem 3rem;gap:3.5rem}
+  section{padding:4.5rem 1.4rem}
+  .course-grid{grid-template-columns:1fr}
+  .method-grid{grid-template-columns:1fr;gap:2.2rem}
+  .instructor{grid-template-columns:1fr;gap:2.5rem}
+  .hero-meta{gap:1.8rem;flex-wrap:wrap}
+  footer{padding:2.2rem 1.4rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="logo" href="#" aria-label="Claritas Academy home">
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <circle cx="16" cy="16" r="13" stroke="#C8A45C" stroke-width="1.4"/>
+      <path d="M9 20 L16 9 L23 20" stroke="#ECE6D8" stroke-width="1.4" fill="none"/>
+      <circle cx="16" cy="9" r="2" fill="#C8A45C"/>
+    </svg>
+    <span class="logo-name">Claritas <em>Academy</em></span>
+  </a>
+  <div class="nav-links">
+    <a href="#courses">Courses</a>
+    <a href="#method">Method</a>
+    <a href="#instructor">Instructor</a>
+    <a href="enroll.html#signin">Sign in</a>
+    <a href="enroll.html" class="btn">Enroll</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-copy">
+    <div class="hero-eyebrow">
+      <span class="rule"></span>
+      <span class="mono">Online lectures · Science & Engineering</span>
+    </div>
+    <h1 id="headline">
+      <span class="line"><span>Complex ideas,</span></span>
+      <span class="line"><span><em>explained simply.</em></span></span>
+    </h1>
+    <p class="hero-sub reveal">
+      Cinematic video lectures that take you from first principles to deep understanding —
+      thermodynamics, mechanics, materials, energy. No jargon walls. No hand-waving.
+      Just the concept, made clear.
+    </p>
+    <div class="hero-ctas reveal">
+      <a href="enroll.html" class="btn btn-solid">Start learning</a>
+      <a href="#courses" class="btn">Browse courses</a>
+    </div>
+    <div class="hero-meta reveal">
+      <div><b data-count="120">0</b><span class="mono">Lectures</span></div>
+      <div><b data-count="8">0</b><span class="mono">Courses</span></div>
+      <div><b data-count="40">0</b><span class="mono">Hours of video</span></div>
+    </div>
+  </div>
+
+  <!-- signature: self-drawing energy schematic -->
+  <div class="schematic-wrap" aria-hidden="true">
+    <svg viewBox="0 0 520 420" fill="none">
+      <!-- grid -->
+      <g class="sch-faint">
+        <path class="draw" d="M60 40 V370"/>
+        <path class="draw" d="M60 370 H490"/>
+        <path class="draw" d="M60 130 H490" stroke-dasharray="3 6"/>
+        <path class="draw" d="M60 250 H490" stroke-dasharray="3 6"/>
+      </g>
+      <!-- axis labels -->
+      <text class="sch-label" x="48" y="36" text-anchor="end">E</text>
+      <text class="sch-label" x="492" y="388">reaction coordinate</text>
+      <text class="sch-label" x="68" y="124">activation barrier</text>
+      <text class="sch-label" x="350" y="244">ΔH released</text>
+      <!-- energy curve -->
+      <path class="sch-line draw" d="M60 300 C 130 300, 150 110, 220 110 C 290 110, 300 330, 380 330 C 430 330, 460 330, 490 330"/>
+      <!-- comprehension line (brass): the simple path through -->
+      <path class="sch-brass draw" d="M60 300 L 220 150 L 490 330" stroke-dasharray="5 7"/>
+      <!-- markers -->
+      <circle class="sch-dot pop" cx="60" cy="300" r="4"/>
+      <circle class="sch-dot pop" cx="220" cy="110" r="4"/>
+      <circle class="sch-dot pop" cx="490" cy="330" r="4"/>
+      <text class="sch-label" x="60" y="320">complex</text>
+      <text class="sch-label" x="465" y="350" text-anchor="end">understood</text>
+    </svg>
+    <div class="schematic-caption">
+      <span class="mono">Fig. 01 — lowering the barrier to understanding</span>
+      <span class="mono">CLA-001</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track mono" id="marquee">
+    <span>Thermodynamics</span><span class="dot">●</span>
+    <span>Fluid Mechanics</span><span class="dot">●</span>
+    <span>Electromagnetism</span><span class="dot">●</span>
+    <span>Materials Science</span><span class="dot">●</span>
+    <span>Hydrogen & Energy Storage</span><span class="dot">●</span>
+    <span>Reaction Kinetics</span><span class="dot">●</span>
+    <span>Statics & Structures</span><span class="dot">●</span>
+    <span>Heat Transfer</span><span class="dot">●</span>
+  </div>
+</div>
+
+<!-- ============ COURSES ============ -->
+<section id="courses">
+  <div class="section-head">
+    <div>
+      <div class="kicker"><span class="rule"></span><span class="mono">Course catalogue</span></div>
+      <h2>Lectures built from <em>first principles</em></h2>
+    </div>
+    <p>Every course starts where you are and builds the full picture, one honest step at a time. Filmed in studio quality, structured like a story.</p>
+  </div>
+
+  <div class="course-grid">
+
+    <a class="course-card reveal" href="course-thermodynamics.html" aria-label="Open course: Thermodynamics, The Logic of Heat">
+      <div class="card-art">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="400" height="250" fill="#15181D"/>
+          <g stroke="#7FB4C9" stroke-width="1.2" fill="none" opacity=".8">
+            <path d="M40 200 C 100 200, 110 60, 200 60 C 290 60, 300 200, 360 200"/>
+            <path d="M40 180 C 100 180, 120 90, 200 90 C 280 90, 300 180, 360 180" opacity=".45"/>
+            <path d="M40 160 C 110 160, 130 120, 200 120 C 270 120, 290 160, 360 160" opacity=".25"/>
+          </g>
+          <g fill="#C8A45C"><circle cx="200" cy="60" r="3.5"/><circle cx="120" cy="146" r="2.5"/><circle cx="285" cy="148" r="2.5"/></g>
+          <text x="40" y="232" font-family="IBM Plex Mono" font-size="9" fill="#A8A296" letter-spacing="2">ISOTHERMS · P–V SPACE</text>
+        </svg>
+        <span class="card-code">THM-101</span>
+        <span class="play-chip"><svg viewBox="0 0 12 12"><path d="M2 1 L11 6 L2 11 Z"/></svg></span>
+      </div>
+      <div class="card-body">
+        <h3>Thermodynamics: The Logic of Heat</h3>
+        <p>Energy, entropy, and why nothing in the universe is free. From steam engines to why your coffee cools.</p>
+        <div class="card-meta"><span class="mono lessons">16 lectures</span><span class="mono">6h 20m</span></div>
+      </div>
+    </a>
+
+    <article class="course-card reveal">
+      <div class="card-art">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="400" height="250" fill="#131A1A"/>
+          <g stroke="#7FB4C9" stroke-width="1.1" fill="none" opacity=".75">
+            <path d="M0 70 C 80 70, 120 50, 200 50 C 280 50, 320 70, 400 70"/>
+            <path d="M0 105 C 80 105, 130 85, 200 85 C 270 85, 320 105, 400 105"/>
+            <path d="M0 140 C 80 140, 140 125, 200 125 C 260 125, 320 140, 400 140"/>
+            <path d="M0 175 C 90 175, 150 168, 200 168 C 250 168, 310 175, 400 175"/>
+          </g>
+          <ellipse cx="200" cy="112" rx="46" ry="60" stroke="#C8A45C" stroke-width="1.4" fill="none"/>
+          <text x="40" y="232" font-family="IBM Plex Mono" font-size="9" fill="#A8A296" letter-spacing="2">STREAMLINES AROUND A BODY</text>
+        </svg>
+        <span class="card-code">FLM-201</span>
+        <span class="play-chip"><svg viewBox="0 0 12 12"><path d="M2 1 L11 6 L2 11 Z"/></svg></span>
+      </div>
+      <div class="card-body">
+        <h3>Fluid Mechanics: How Things Flow</h3>
+        <p>Pressure, viscosity, turbulence — the physics of rivers, wings, pipelines, and blood.</p>
+        <div class="card-meta"><span class="mono lessons">14 lectures</span><span class="mono">5h 40m</span></div>
+      </div>
+    </article>
+
+    <article class="course-card reveal">
+      <div class="card-art">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="400" height="250" fill="#17141D"/>
+          <g stroke="#7FB4C9" stroke-width="1.1" fill="none" opacity=".8">
+            <ellipse cx="200" cy="125" rx="150" ry="55"/>
+            <ellipse cx="200" cy="125" rx="110" ry="38" opacity=".55"/>
+            <ellipse cx="200" cy="125" rx="70" ry="22" opacity=".35"/>
+          </g>
+          <circle cx="200" cy="125" r="9" fill="#C8A45C"/>
+          <circle cx="320" cy="100" r="4" fill="#ECE6D8"/>
+          <text x="40" y="232" font-family="IBM Plex Mono" font-size="9" fill="#A8A296" letter-spacing="2">FIELD LINES · POINT CHARGE</text>
+        </svg>
+        <span class="card-code">EMG-301</span>
+        <span class="play-chip"><svg viewBox="0 0 12 12"><path d="M2 1 L11 6 L2 11 Z"/></svg></span>
+      </div>
+      <div class="card-body">
+        <h3>Electromagnetism Without Fear</h3>
+        <p>Fields, circuits, and Maxwell's equations told as one coherent story — not four scary lines.</p>
+        <div class="card-meta"><span class="mono lessons">18 lectures</span><span class="mono">7h 10m</span></div>
+      </div>
+    </article>
+
+    <article class="course-card reveal">
+      <div class="card-art">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="400" height="250" fill="#1A1712"/>
+          <g stroke="#C8A45C" stroke-width="1.1" fill="none" opacity=".85">
+            <path d="M80 190 L140 60 L200 190 Z"/><path d="M140 190 L200 60 L260 190 Z" opacity=".6"/><path d="M200 190 L260 60 L320 190 Z" opacity=".35"/>
+          </g>
+          <g fill="#7FB4C9"><circle cx="140" cy="60" r="3"/><circle cx="200" cy="60" r="3"/><circle cx="260" cy="60" r="3"/></g>
+          <line x1="40" y1="190" x2="360" y2="190" stroke="#A8A296" stroke-width="1" opacity=".5"/>
+          <text x="40" y="232" font-family="IBM Plex Mono" font-size="9" fill="#A8A296" letter-spacing="2">CRYSTAL LATTICE · UNIT CELLS</text>
+        </svg>
+        <span class="card-code">MAT-210</span>
+        <span class="play-chip"><svg viewBox="0 0 12 12"><path d="M2 1 L11 6 L2 11 Z"/></svg></span>
+      </div>
+      <div class="card-body">
+        <h3>Materials: Why Things Break</h3>
+        <p>Crystals, defects, fatigue, and fracture — what metals, ceramics, and polymers are really doing.</p>
+        <div class="card-meta"><span class="mono lessons">15 lectures</span><span class="mono">5h 55m</span></div>
+      </div>
+    </article>
+
+    <article class="course-card reveal">
+      <div class="card-art">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="400" height="250" fill="#121A16"/>
+          <g stroke="#7FB4C9" stroke-width="1.2" fill="none" opacity=".85">
+            <circle cx="150" cy="115" r="34"/><circle cx="250" cy="115" r="34"/>
+            <line x1="184" y1="115" x2="216" y2="115"/>
+          </g>
+          <g fill="#C8A45C"><circle cx="150" cy="115" r="5"/><circle cx="250" cy="115" r="5"/></g>
+          <g stroke="#ECE6D8" stroke-width="1" opacity=".4" fill="none">
+            <path d="M80 200 q 20 -14 40 0 t 40 0 t 40 0 t 40 0 t 40 0 t 40 0"/>
+          </g>
+          <text x="40" y="232" font-family="IBM Plex Mono" font-size="9" fill="#A8A296" letter-spacing="2">H₂ · BOND & RELEASE</text>
+        </svg>
+        <span class="card-code">NRG-401</span>
+        <span class="play-chip"><svg viewBox="0 0 12 12"><path d="M2 1 L11 6 L2 11 Z"/></svg></span>
+      </div>
+      <div class="card-body">
+        <h3>Hydrogen & the Future of Energy</h3>
+        <p>Storage, hydrides, fuel cells — the chemistry and engineering of the lightest element, from the lab bench out.</p>
+        <div class="card-meta"><span class="mono lessons">12 lectures</span><span class="mono">4h 45m</span></div>
+      </div>
+    </article>
+
+    <article class="course-card reveal">
+      <div class="card-art">
+        <svg viewBox="0 0 400 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="400" height="250" fill="#1A1216"/>
+          <g stroke="#7FB4C9" stroke-width="1.2" fill="none" opacity=".85">
+            <path d="M50 200 C 110 200, 130 70, 200 70"/>
+            <path d="M200 70 C 270 70, 290 185, 350 185" stroke-dasharray="4 6" opacity=".6"/>
+          </g>
+          <line x1="50" y1="70" x2="350" y2="70" stroke="#A8A296" stroke-width="1" stroke-dasharray="2 6" opacity=".5"/>
+          <circle cx="200" cy="70" r="4" fill="#C8A45C"/>
+          <text x="40" y="232" font-family="IBM Plex Mono" font-size="9" fill="#A8A296" letter-spacing="2">RATE LAW · CONCENTRATION VS TIME</text>
+        </svg>
+        <span class="card-code">KIN-220</span>
+        <span class="play-chip"><svg viewBox="0 0 12 12"><path d="M2 1 L11 6 L2 11 Z"/></svg></span>
+      </div>
+      <div class="card-body">
+        <h3>Reaction Kinetics: The Speed of Change</h3>
+        <p>Why some reactions explode and others take centuries — rates, mechanisms, and catalysts demystified.</p>
+        <div class="card-meta"><span class="mono lessons">13 lectures</span><span class="mono">5h 05m</span></div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ METHOD ============ -->
+<section class="method" id="method">
+  <div class="kicker"><span class="rule"></span><span class="mono">The method</span></div>
+  <h2>Simple is not <em>shallow</em></h2>
+  <div class="method-grid">
+    <div class="method-item reveal">
+      <span class="mono">Step 01</span>
+      <h3>Start from intuition</h3>
+      <p>Every lecture opens with something you already understand — a kettle, a bridge, a battery — and builds the formal idea on top of it.</p>
+    </div>
+    <div class="method-item reveal">
+      <span class="mono">Step 02</span>
+      <h3>Derive, don't declare</h3>
+      <p>Equations are earned on screen, step by step, so you see where each term comes from and what it physically means.</p>
+    </div>
+    <div class="method-item reveal">
+      <span class="mono">Step 03</span>
+      <h3>Return to the real world</h3>
+      <p>Each concept closes with a real engineering case — from lab experiments to industrial systems — so the idea stays with you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSTRUCTOR ============ -->
+<section class="instructor" id="instructor">
+  <div class="portrait reveal">
+    <img src="images/instructor.jpg" alt="Lead instructor of Claritas Academy">
+    <span class="portrait-tag">Lead instructor</span>
+  </div>
+  <div class="instructor-copy">
+    <div class="kicker"><span class="rule"></span><span class="mono">The instructor</span></div>
+    <h2>Taught by a <em>working researcher</em></h2>
+    <p class="reveal">
+      These lectures are built by a researcher who spends their days at the bench — running experiments,
+      analyzing data, and writing papers — and who believes the gap between research and the public
+      is a translation problem, not an intelligence problem.
+    </p>
+    <blockquote class="reveal">"If you can't explain it simply, you haven't finished understanding it yourself."</blockquote>
+    <p class="reveal">
+      Every course is a promise: no concept left as a black box, no equation dropped from the sky,
+      no student left behind at step three.
+    </p>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta" id="join">
+  <span class="price reveal">Founding membership · one plan, every course</span>
+  <h2 class="reveal">Understand the world the way <em>engineers</em> do.</h2>
+  <p class="reveal">New lectures every month. Watch anywhere, at your own pace. Cancel anytime.</p>
+  <div class="reveal"><a href="enroll.html" class="btn btn-solid">Enroll now</a></div>
+</section>
+
+<footer>
+  <span class="logo-name">Claritas <em>Academy</em></span>
+  <span class="mono">Complex made clear · Est. 2026</span>
+  <span class="mono">© Claritas Academy</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* nav background on scroll */
+const nav = document.getElementById('nav');
+ScrollTrigger.create({
+  start: 80,
+  onUpdate: self => nav.classList.toggle('scrolled', self.scroll() > 80)
+});
+
+if (!reduced) {
+
+  /* ---------- hero load sequence ---------- */
+  const tl = gsap.timeline({defaults:{ease:'power3.out'}});
+
+  tl.from('nav', {y:-30, opacity:0, duration:.8})
+    .from('.hero-eyebrow', {opacity:0, x:-20, duration:.7}, '-=.4')
+    .from('#headline .line span', {yPercent:110, duration:1.1, stagger:.14, ease:'power4.out'}, '-=.45')
+    .to('.hero-copy .reveal', {opacity:1, y:0, duration:.9, stagger:.12}, '-=.55');
+
+  /* schematic self-draw */
+  document.querySelectorAll('.schematic-wrap .draw').forEach((p,i)=>{
+    const len = p.getTotalLength();
+    const originalDash = p.getAttribute('stroke-dasharray'); // preserve dashed styles
+    gsap.fromTo(p,
+      {strokeDasharray:len, strokeDashoffset:len},
+      {strokeDashoffset:0, duration:1.6, delay:.6 + i*.18, ease:'power2.inOut',
+       onComplete(){ if(originalDash){ p.style.strokeDasharray = originalDash; } }
+      }
+    );
+  });
+  gsap.from('.schematic-wrap .pop', {scale:0, transformOrigin:'center', duration:.5, stagger:.15, delay:2.2, ease:'back.out(2.5)'});
+  gsap.from('.schematic-wrap text', {opacity:0, duration:.8, delay:2.4, stagger:.08});
+  gsap.from('.schematic-caption', {opacity:0, y:10, duration:.8, delay:2.6});
+
+  /* counters */
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    const target = +el.dataset.count;
+    gsap.to(el, {
+      innerText: target, duration: 1.8, delay: 1.2, snap:{innerText:1}, ease:'power2.out',
+      onUpdate(){ el.innerText = Math.round(el.innerText) + (target>=40 ? '+' : ''); }
+    });
+  });
+
+  /* marquee */
+  const track = document.getElementById('marquee');
+  track.innerHTML += track.innerHTML; // duplicate for seamless loop
+  gsap.to(track, {xPercent:-50, duration:28, ease:'none', repeat:-1});
+
+  /* scroll reveals */
+  gsap.utils.toArray('section .reveal').forEach(el=>{
+    gsap.to(el, {
+      opacity:1, y:0, duration:.9, ease:'power3.out',
+      scrollTrigger:{trigger:el, start:'top 86%'}
+    });
+  });
+
+  /* course cards stagger */
+  ScrollTrigger.batch('.course-card', {
+    start:'top 88%',
+    onEnter: batch => gsap.to(batch, {opacity:1, y:0, duration:.85, stagger:.12, ease:'power3.out'})
+  });
+
+  /* subtle parallax on card art */
+  gsap.utils.toArray('.card-art svg').forEach(svg=>{
+    gsap.fromTo(svg, {yPercent:-6}, {
+      yPercent:6, ease:'none',
+      scrollTrigger:{trigger:svg.closest('.course-card'), start:'top bottom', end:'bottom top', scrub:true}
+    });
+  });
+
+  /* section headings drift in */
+  gsap.utils.toArray('h2').forEach(h=>{
+    gsap.from(h, {
+      opacity:0, y:26, duration:1, ease:'power3.out',
+      scrollTrigger:{trigger:h, start:'top 88%'}
+    });
+  });
+
+} else {
+  document.querySelectorAll('.reveal').forEach(el=>{el.style.opacity=1; el.style.transform='none';});
+}
+</script>
+</body>
+</html>

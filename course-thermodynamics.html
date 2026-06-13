@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thermodynamics: The Logic of Heat — Claritas Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0B0D;
+  --panel:#131316;
+  --panel-2:#1A1A1F;
+  --ivory:#ECE6D8;
+  --ivory-dim:#A8A296;
+  --brass:#C8A45C;
+  --brass-soft:rgba(200,164,92,.14);
+  --schematic:#7FB4C9;
+  --line:rgba(236,230,216,.10);
+  --display:'Fraunces',serif;
+  --body:'Archivo',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--ink);color:var(--ivory);
+  font-family:var(--body);font-weight:300;line-height:1.6;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+::selection{background:var(--brass);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit}
+.mono{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  background:rgba(11,11,13,.94);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(14px);
+}
+.logo{display:flex;align-items:center;gap:.7rem}
+.logo svg{width:28px;height:28px}
+.logo-name{font-family:var(--display);font-weight:500;font-size:1.1rem}
+.logo-name em{font-style:italic;color:var(--brass)}
+.back-link{display:flex;align-items:center;gap:.6rem;color:var(--ivory-dim);font-size:.82rem;letter-spacing:.06em;transition:color .25s}
+.back-link:hover{color:var(--ivory)}
+.back-link svg{width:14px;height:14px;stroke:currentColor}
+
+/* ---------- course header ---------- */
+.course-header{padding:3.2rem 3rem 2rem;border-bottom:1px solid var(--line)}
+.kicker{display:flex;align-items:center;gap:.9rem;color:var(--brass);margin-bottom:1rem}
+.kicker .rule{width:36px;height:1px;background:var(--brass)}
+h1{font-family:var(--display);font-weight:300;font-size:clamp(1.9rem,3.6vw,3rem);line-height:1.1;letter-spacing:-.01em;max-width:46rem}
+h1 em{font-style:italic;color:var(--brass);font-weight:400}
+.course-stats{display:flex;gap:2.4rem;margin-top:1.4rem;color:var(--ivory-dim);flex-wrap:wrap}
+.course-stats .mono b{color:var(--brass);font-weight:500}
+
+/* ---------- watch layout ---------- */
+.watch{
+  display:grid;grid-template-columns:1fr 380px;gap:0;
+  min-height:calc(100vh - 73px);
+}
+.stage{padding:2.2rem 3rem 4rem;border-right:1px solid var(--line)}
+.player-frame{
+  position:relative;border:1px solid var(--line);border-radius:4px;overflow:hidden;
+  background:#000;
+}
+.player-frame video{display:block;width:100%;aspect-ratio:16/9;background:#000}
+.now-playing{margin-top:1.8rem}
+.now-playing .mono{color:var(--brass)}
+.now-playing h2{
+  font-family:var(--display);font-weight:400;font-size:clamp(1.4rem,2.4vw,2rem);
+  margin:.5rem 0 .8rem;line-height:1.2;
+}
+.now-playing p{color:var(--ivory-dim);max-width:42rem;font-size:.95rem}
+.lecture-nav{display:flex;gap:1rem;margin-top:1.6rem}
+.btn{
+  display:inline-flex;align-items:center;gap:.6rem;
+  border:1px solid var(--line);background:transparent;color:var(--ivory-dim);
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  padding:.7rem 1.3rem;border-radius:2px;
+  transition:border-color .3s,color .3s;
+}
+.btn:hover:not(:disabled){border-color:var(--brass);color:var(--brass)}
+.btn:disabled{opacity:.35;cursor:default}
+
+/* ---------- playlist ---------- */
+.playlist{display:flex;flex-direction:column;background:var(--panel)}
+.playlist-head{
+  padding:1.6rem 1.8rem 1.2rem;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.playlist-head .mono{color:var(--ivory-dim)}
+.playlist-head .count{color:var(--brass)}
+.playlist-scroll{overflow-y:auto;flex:1;max-height:calc(100vh - 73px - 64px)}
+.playlist-scroll::-webkit-scrollbar{width:6px}
+.playlist-scroll::-webkit-scrollbar-thumb{background:rgba(236,230,216,.15);border-radius:3px}
+.lecture-item{
+  display:grid;grid-template-columns:34px 1fr auto;gap:1rem;align-items:center;
+  width:100%;text-align:left;
+  padding:1.15rem 1.8rem;border-bottom:1px solid var(--line);
+  color:var(--ivory-dim);
+  transition:background .25s,color .25s;
+  position:relative;
+}
+.lecture-item:hover{background:var(--panel-2);color:var(--ivory)}
+.lecture-item .num{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--ivory-dim);
+}
+.lecture-item .l-title{font-size:.9rem;font-weight:400;line-height:1.35}
+.lecture-item .dur{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;opacity:.7}
+.lecture-item.active{background:var(--brass-soft);color:var(--ivory)}
+.lecture-item.active::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--brass);
+}
+.lecture-item.active .num{color:var(--brass)}
+.lecture-item.watched .num::after{content:" ✓";color:var(--brass)}
+
+/* ---------- chapters (subtopics inside one video) ---------- */
+.chapter-group{display:none;background:rgba(11,11,13,.45);border-bottom:1px solid var(--line)}
+.chapter-group.open{display:block}
+.chapter-item{
+  display:grid;grid-template-columns:52px 1fr;gap:.9rem;align-items:baseline;
+  width:100%;text-align:left;
+  padding:.62rem 1.8rem .62rem 3.1rem;
+  color:var(--ivory-dim);font-size:.84rem;
+  border-left:2px solid transparent;
+  transition:background .2s,color .2s;
+}
+.chapter-item:hover{background:var(--panel-2);color:var(--ivory)}
+.chapter-item .ch-time{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;color:var(--brass);opacity:.85;
+}
+.chapter-item .ch-title{line-height:1.35}
+.chapter-item.playing{
+  background:var(--brass-soft);color:var(--ivory);border-left-color:var(--brass);
+}
+.chapter-item.playing .ch-time{opacity:1}
+
+/* about strip */
+.about-course{
+  padding:3rem;border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem;
+}
+.about-item{border-top:1px solid var(--line);padding-top:1.3rem}
+.about-item .mono{color:var(--brass);display:block;margin-bottom:.7rem}
+.about-item p{color:var(--ivory-dim);font-size:.9rem}
+
+footer{
+  border-top:1px solid var(--line);padding:2.4rem 3rem;display:flex;
+  justify-content:space-between;align-items:center;color:var(--ivory-dim);flex-wrap:wrap;gap:1rem;
+}
+
+.reveal{opacity:0;transform:translateY(24px)}
+
+/* ---------- access gate ---------- */
+.gate{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(11,11,13,.92);backdrop-filter:blur(18px);
+  padding:1.5rem;
+}
+.gate.hidden{display:none}
+.gate-card{
+  background:var(--panel);border:1px solid rgba(200,164,92,.35);border-radius:4px;
+  padding:2.8rem 2.6rem;max-width:26rem;width:100%;text-align:center;
+  position:relative;
+}
+.gate-card::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:60px;height:2px;background:var(--brass);
+}
+.gate-logo{width:36px;height:36px;margin-bottom:1.1rem}
+.gate-kicker{color:var(--brass);display:block;margin-bottom:.9rem}
+.gate-title{font-family:var(--display);font-weight:300;font-size:1.7rem;line-height:1.15}
+.gate-title em{font-style:italic;color:var(--brass);font-weight:400}
+.gate-sub{color:var(--ivory-dim);font-size:.88rem;margin:.9rem 0 1.6rem}
+.gate-form{display:flex;gap:.6rem}
+.gate-input{
+  flex:1;min-width:0;
+  background:var(--ink);border:1px solid var(--line);border-radius:2px;
+  color:var(--ivory);font-family:var(--mono);font-size:.85rem;letter-spacing:.18em;
+  padding:.85rem 1rem;text-transform:uppercase;
+  transition:border-color .25s;
+}
+.gate-input::placeholder{color:rgba(168,162,150,.45);letter-spacing:.18em}
+.gate-input:focus{outline:none;border-color:var(--brass)}
+.gate-btn{
+  background:var(--brass);color:var(--ink);border:1px solid var(--brass);border-radius:2px;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  padding:.85rem 1.3rem;transition:background .25s;
+}
+.gate-btn:hover{background:#D9B871}
+.gate-error{
+  display:none;color:#D98A7A;font-size:.8rem;margin-top:1rem;
+}
+.gate-error.show{display:block}
+.gate-foot{margin-top:1.7rem;padding-top:1.4rem;border-top:1px solid var(--line);
+  color:var(--ivory-dim);font-size:.84rem}
+.gate-foot a{color:var(--brass);border-bottom:1px solid rgba(200,164,92,.4)}
+.gate-foot a:hover{border-bottom-color:var(--brass)}
+.gate-card.shake{animation:shake .4s}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  20%,60%{transform:translateX(-8px)}
+  40%,80%{transform:translateX(8px)}
+}
+/* welcome banner shown after a successful unlock */
+.access-note{
+  position:fixed;bottom:1.6rem;left:50%;transform:translateX(-50%) translateY(90px);
+  background:var(--panel-2);border:1px solid var(--brass);border-radius:2px;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ivory);padding:.9rem 1.5rem;z-index:150;
+  opacity:0;transition:transform .4s,opacity .4s;max-width:90vw;text-align:center;
+}
+.access-note.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media (max-width:1080px){
+  .watch{grid-template-columns:1fr}
+  .stage{border-right:none;padding:1.6rem 1.4rem 2.5rem}
+  .playlist-scroll{max-height:none}
+  .course-header{padding:2.2rem 1.4rem 1.6rem}
+  nav{padding:1rem 1.4rem}
+  .about-course{grid-template-columns:1fr;padding:2.2rem 1.4rem;gap:1.6rem}
+  footer{padding:2rem 1.4rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ ACCESS GATE ============ -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" class="gate-logo">
+      <circle cx="16" cy="16" r="13" stroke="#C8A45C" stroke-width="1.4"/>
+      <path d="M9 20 L16 9 L23 20" stroke="#ECE6D8" stroke-width="1.4" fill="none"/>
+      <circle cx="16" cy="9" r="2" fill="#C8A45C"/>
+    </svg>
+    <span class="mono gate-kicker">Members only</span>
+    <h2 class="gate-title">Enter your <em>access code</em></h2>
+    <p class="gate-sub">This course is for enrolled students. Enter the code you received on WhatsApp after payment.</p>
+    <form class="gate-form" id="gate-form">
+      <input type="text" id="gate-input" class="gate-input" placeholder="ACCESS CODE"
+             autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Access code">
+      <button type="submit" class="gate-btn">Unlock</button>
+    </form>
+    <p class="gate-error" id="gate-error">That code isn't valid. Check your WhatsApp message and try again.</p>
+    <p class="gate-foot">Not enrolled yet? <a href="enroll.html">Enroll here</a> — it takes a few minutes.</p>
+  </div>
+</div>
+<div class="access-note" id="access-note" role="status"></div>
+
+<nav>
+  <a class="logo" href="claritas-academy.html" aria-label="Claritas Academy home">
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <circle cx="16" cy="16" r="13" stroke="#C8A45C" stroke-width="1.4"/>
+      <path d="M9 20 L16 9 L23 20" stroke="#ECE6D8" stroke-width="1.4" fill="none"/>
+      <circle cx="16" cy="9" r="2" fill="#C8A45C"/>
+    </svg>
+    <span class="logo-name">Claritas <em>Academy</em></span>
+  </a>
+  <a class="back-link" href="claritas-academy.html">
+    <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M10 3 L5 8 L10 13"/></svg>
+    All courses
+  </a>
+</nav>
+
+<header class="course-header">
+  <div class="kicker"><span class="rule"></span><span class="mono" id="course-code">THM-101</span></div>
+  <h1 id="course-title">Thermodynamics: <em>The Logic of Heat</em></h1>
+  <div class="course-stats">
+    <span class="mono"><b id="stat-count">0</b> lectures</span>
+    <span class="mono"><b id="stat-progress">1</b> / <span id="stat-total">0</span> watching</span>
+  </div>
+</header>
+
+<div class="watch">
+  <!-- ============ PLAYER ============ -->
+  <main class="stage">
+    <div class="player-frame reveal">
+      <video id="player" controls preload="metadata" poster="">
+        Your browser does not support HTML5 video.
+      </video>
+    </div>
+    <div class="now-playing">
+      <span class="mono reveal" id="np-label">Lecture 01</span>
+      <h2 class="reveal" id="np-title">—</h2>
+      <p class="reveal" id="np-desc">—</p>
+      <div class="lecture-nav reveal">
+        <button class="btn" id="prev-btn">← Previous</button>
+        <button class="btn" id="next-btn">Next lecture →</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ PLAYLIST ============ -->
+  <aside class="playlist" aria-label="Course lectures">
+    <div class="playlist-head">
+      <span class="mono">Course contents</span>
+      <span class="mono count" id="playlist-count"></span>
+    </div>
+    <div class="playlist-scroll" id="playlist"></div>
+  </aside>
+</div>
+
+<section class="about-course">
+  <div class="about-item reveal">
+    <span class="mono">What you'll learn</span>
+    <p>Energy, entropy, the four laws, and how to reason about any system that stores or moves heat — from engines to electrolyzers.</p>
+  </div>
+  <div class="about-item reveal">
+    <span class="mono">Prerequisites</span>
+    <p>High-school algebra and curiosity. Every derivation is built on screen from the first step — nothing is assumed.</p>
+  </div>
+  <div class="about-item reveal">
+    <span class="mono">Format</span>
+    <p>Studio-filmed lectures with worked examples and real laboratory cases. Watch in order — each lecture builds on the last.</p>
+  </div>
+</section>
+
+<footer>
+  <span class="logo-name">Claritas <em>Academy</em></span>
+  <span class="mono">Complex made clear</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+/* ===================================================================
+   ACCESS CONTROL — GOOGLE SHEET SETUP
+   -------------------------------------------------------------------
+   After you deploy your Google Apps Script (see setup steps),
+   paste its Web App URL between the quotes below. It looks like:
+   https://script.google.com/macros/s/AKfycb.../exec
+
+   Until you paste a URL, the gate falls back to the simple
+   ACCESS_CODES list underneath, so your site keeps working.
+   =================================================================== */
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbwjWdeSHNozyGIfzYmV-XE4RImCBc5vY12unLNgepoqlSRrdfO3Uv7IA458KNZBbRIf/exec";
+
+/* Fallback codes — only used while SHEET_API_URL is not set */
+const ACCESS_CODES = [
+  "CLARITAS2026"
+];
+/* =================================================================== */
+
+(function gateInit(){
+  const gate  = document.getElementById('gate');
+  const form  = document.getElementById('gate-form');
+  const input = document.getElementById('gate-input');
+  const error = document.getElementById('gate-error');
+  const card  = gate.querySelector('.gate-card');
+  const btn   = form.querySelector('.gate-btn');
+  const useSheet = SHEET_API_URL.startsWith('https://script.google.com/');
+  const valid = ACCESS_CODES.map(c => c.replace(/\s/g,'').toUpperCase());
+
+  /* ---------- remembered access ----------
+     A "pass" is saved when the student signs in on the enroll page
+     (or unlocks here directly). It is honored until their PaidUntil
+     date, with a re-check after 30 days at most, so revoked codes
+     eventually lock out. Session memory is the short-term fallback. */
+  function savePass(untilISO){
+    try {
+      localStorage.setItem('claritas-pass', JSON.stringify({
+        ok: true, until: untilISO || null, checked: Date.now()
+      }));
+    } catch(e){}
+    try { sessionStorage.setItem('claritas-access','ok'); } catch(e){}
+  }
+  function hasValidPass(){
+    try {
+      if (sessionStorage.getItem('claritas-access') === 'ok') return true;
+    } catch(e){}
+    try {
+      const raw = localStorage.getItem('claritas-pass');
+      if (!raw) return false;
+      const pass = JSON.parse(raw);
+      if (!pass.ok) return false;
+      if (Date.now() - (pass.checked || 0) > 30*24*60*60*1000) return false;
+      if (pass.until && pass.until < new Date().toISOString().slice(0,10)) return false;
+      return true;
+    } catch(e){ return false; }
+  }
+
+  function fmtDate(iso){
+    return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB',
+      {day:'numeric', month:'long', year:'numeric'});
+  }
+
+  function showWelcome(untilISO){
+    const note = document.getElementById('access-note');
+    note.textContent = untilISO
+      ? 'Welcome — your access is valid until ' + fmtDate(untilISO) + '.'
+      : 'Welcome to Claritas Academy.';
+    note.classList.add('show');
+    setTimeout(() => note.classList.remove('show'), 8000);
+  }
+
+  function open(untilISO){
+    if (typeof gsap !== 'undefined') {
+      gsap.to(gate, {opacity:0, duration:.5, ease:'power2.out',
+        onComplete(){ gate.classList.add('hidden'); showWelcome(untilISO); }});
+    } else {
+      gate.classList.add('hidden');
+      showWelcome(untilISO);
+    }
+    savePass(untilISO);
+  }
+
+  function fail(msg){
+    error.textContent = msg;
+    error.classList.add('show');
+    card.classList.remove('shake');
+    void card.offsetWidth; /* restart animation */
+    card.classList.add('shake');
+    input.select();
+  }
+
+  if (hasValidPass()) { gate.classList.add('hidden'); }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const attempt = input.value.replace(/\s/g,'').toUpperCase();
+    if (!attempt) return;
+    error.classList.remove('show');
+
+    if (!useSheet) {
+      /* fallback: check the local list */
+      if (valid.includes(attempt)) open();
+      else fail("That code isn't valid. Check your WhatsApp message and try again.");
+      return;
+    }
+
+    /* ask the Google Sheet */
+    btn.disabled = true;
+    const oldLabel = btn.textContent;
+    btn.textContent = 'Checking…';
+    try {
+      const res  = await fetch(SHEET_API_URL + '?code=' + encodeURIComponent(attempt));
+      const data = await res.json();
+      if (data.valid) {
+        open(data.until || null);
+      } else if (data.reason === 'expired') {
+        fail('Your access expired' + (data.until ? ' on ' + fmtDate(data.until) : '') +
+             '. Message us on WhatsApp to renew and keep learning.');
+      } else if (data.reason === 'revoked') {
+        fail('This code has been deactivated. If you think this is a mistake, contact us on WhatsApp.');
+      } else {
+        fail("That code isn't valid. Check your WhatsApp message and try again.");
+      }
+    } catch (err) {
+      fail("Couldn't check the code — please check your internet connection and try again.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = oldLabel;
+    }
+  });
+})();
+</script>
+<script>
+/* ===================================================================
+   EDIT THIS BLOCK TO ADD YOUR LECTURES
+   -------------------------------------------------------------------
+   file     → the video filename inside your  videos/  folder
+   thumb    → the image filename inside your  thumbnails/  folder
+              (shown before play; optional — use "" if you have none)
+   chapters → subtopics INSIDE this one video. "t" is where the
+              subtopic starts, written as "mm:ss" or "h:mm:ss".
+              Viewers click a chapter to jump to that moment.
+              Optional — remove the chapters list if a lecture
+              has none.
+   Add as many lectures as you want: copy a { ... }, block and edit it.
+   =================================================================== */
+const COURSE = {
+  code: "THM-101",
+  lectures: [
+    {
+      title: "What Is Energy, Really?",
+      file: "thermo-lecture-01.mp4",
+      thumb: "thermo-01.jpg",
+      duration: "24:10",
+      desc: "We start with the most abused word in science. Energy is not a substance — it's a bookkeeping system, and once you see the ledger, the rest of thermodynamics follows.",
+      chapters: [
+        { t: "00:00", title: "Introduction" },
+        { t: "03:45", title: "Energy is bookkeeping, not stuff" },
+        { t: "09:20", title: "Kinetic and potential forms" },
+        { t: "15:10", title: "Worked example: the falling weight" },
+        { t: "20:30", title: "Summary and what comes next" }
+      ]
+    },
+    {
+      title: "Temperature and the Zeroth Law",
+      file: "thermo-lecture-02.mp4",
+      thumb: "thermo-02.jpg",
+      duration: "21:35",
+      desc: "Why thermometers work at all, and why the most obvious law of thermodynamics had to be numbered zero — after the others were already famous.",
+      chapters: [
+        { t: "00:00", title: "Introduction" },
+        { t: "05:00", title: "Thermal equilibrium" },
+        { t: "12:30", title: "Why it's called the zeroth law" }
+      ]
+    },
+    {
+      title: "The First Law: Nothing Is Free",
+      file: "thermo-lecture-03.mp4",
+      thumb: "thermo-03.jpg",
+      duration: "26:50",
+      desc: "Heat, work, and internal energy meet in one equation. We derive it from a single experiment you can picture in your kitchen."
+    }
+  ]
+};
+/* =================== END OF EDITABLE BLOCK ======================== */
+
+const player    = document.getElementById('player');
+const playlist  = document.getElementById('playlist');
+const npLabel   = document.getElementById('np-label');
+const npTitle   = document.getElementById('np-title');
+const npDesc    = document.getElementById('np-desc');
+const prevBtn   = document.getElementById('prev-btn');
+const nextBtn   = document.getElementById('next-btn');
+
+let current = 0;
+const watched = new Set();
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* parse "mm:ss" or "h:mm:ss" into seconds */
+function toSeconds(t) {
+  const parts = t.split(':').map(Number);
+  return parts.reduce((acc, v) => acc * 60 + v, 0);
+}
+
+/* build playlist: each lecture, then its chapters underneath */
+COURSE.lectures.forEach((lec, i) => {
+  const item = document.createElement('button');
+  item.className = 'lecture-item';
+  item.setAttribute('aria-label', `Play lecture ${i+1}: ${lec.title}`);
+  item.innerHTML = `
+    <span class="num">${String(i+1).padStart(2,'0')}</span>
+    <span class="l-title">${lec.title}</span>
+    <span class="dur">${lec.duration}</span>`;
+  item.addEventListener('click', () => load(i, true));
+  playlist.appendChild(item);
+
+  if (lec.chapters && lec.chapters.length) {
+    const wrap = document.createElement('div');
+    wrap.className = 'chapter-group';
+    wrap.dataset.lecture = i;
+    lec.chapters.forEach((ch, c) => {
+      const row = document.createElement('button');
+      row.className = 'chapter-item';
+      row.dataset.lecture = i;
+      row.dataset.chapter = c;
+      row.setAttribute('aria-label', `Jump to ${ch.title} at ${ch.t}`);
+      row.innerHTML = `
+        <span class="ch-time">${ch.t}</span>
+        <span class="ch-title">${ch.title}</span>`;
+      row.addEventListener('click', () => {
+        const seek = () => {
+          player.currentTime = toSeconds(ch.t);
+          player.play().catch(()=>{});
+        };
+        if (current !== i) {
+          load(i, false);
+          /* wait until the new video's metadata is ready before seeking */
+          player.addEventListener('loadedmetadata', seek, { once: true });
+          player.load();
+        } else {
+          seek();
+        }
+      });
+      wrap.appendChild(row);
+    });
+    playlist.appendChild(wrap);
+  }
+});
+
+/* highlight the chapter currently playing */
+player.addEventListener('timeupdate', () => {
+  const lec = COURSE.lectures[current];
+  if (!lec.chapters) return;
+  let activeIdx = -1;
+  lec.chapters.forEach((ch, c) => {
+    if (player.currentTime >= toSeconds(ch.t)) activeIdx = c;
+  });
+  document.querySelectorAll('.chapter-item').forEach(el => {
+    el.classList.toggle('playing',
+      +el.dataset.lecture === current && +el.dataset.chapter === activeIdx);
+  });
+});
+
+document.getElementById('playlist-count').textContent =
+  String(COURSE.lectures.length).padStart(2,'0') + ' lectures';
+document.getElementById('stat-count').textContent = COURSE.lectures.length;
+document.getElementById('stat-total').textContent = COURSE.lectures.length;
+document.getElementById('course-code').textContent = COURSE.code;
+
+function load(i, autoplay = false) {
+  if (i < 0 || i >= COURSE.lectures.length) return;
+  watched.add(current);
+  current = i;
+  const lec = COURSE.lectures[i];
+
+  player.src = 'videos/' + lec.file;
+  player.poster = lec.thumb ? 'thumbnails/' + lec.thumb : '';
+  if (autoplay) player.play().catch(()=>{});
+
+  npLabel.textContent = 'Lecture ' + String(i+1).padStart(2,'0');
+  npTitle.textContent = lec.title;
+  npDesc.textContent  = lec.desc;
+  document.getElementById('stat-progress').textContent = i + 1;
+
+  document.querySelectorAll('.lecture-item').forEach((el, j) => {
+    el.classList.toggle('active', j === i);
+    el.classList.toggle('watched', watched.has(j) && j !== i);
+  });
+  document.querySelectorAll('.chapter-group').forEach(el => {
+    el.classList.toggle('open', +el.dataset.lecture === i);
+  });
+
+  prevBtn.disabled = i === 0;
+  nextBtn.disabled = i === COURSE.lectures.length - 1;
+
+  if (!reduced && typeof gsap !== 'undefined') {
+    gsap.fromTo('.now-playing', {opacity:.3, y:8}, {opacity:1, y:0, duration:.5, ease:'power2.out'});
+  }
+}
+
+prevBtn.addEventListener('click', () => load(current - 1, true));
+nextBtn.addEventListener('click', () => load(current + 1, true));
+player.addEventListener('ended', () => {
+  if (current < COURSE.lectures.length - 1) load(current + 1, true);
+});
+
+/* keyboard: ← → switch lectures (when not typing in the player) */
+document.addEventListener('keydown', e => {
+  if (e.target === player) return;
+  if (e.key === 'ArrowRight' && e.shiftKey) load(current + 1, true);
+  if (e.key === 'ArrowLeft'  && e.shiftKey) load(current - 1, true);
+});
+
+load(0, false);
+
+/* entrance animation */
+if (!reduced && typeof gsap !== 'undefined') {
+  const tl = gsap.timeline({defaults:{ease:'power3.out'}});
+  tl.from('nav', {y:-20, opacity:0, duration:.6})
+    .from('.course-header > *', {opacity:0, y:20, duration:.7, stagger:.1}, '-=.3')
+    .to('.stage .reveal', {opacity:1, y:0, duration:.8, stagger:.1}, '-=.35')
+    .from('.lecture-item, .chapter-group.open .chapter-item', {opacity:0, x:24, duration:.6, stagger:.05}, '-=.6')
+    .to('.about-course .reveal', {opacity:1, y:0, duration:.8, stagger:.12}, '-=.4');
+} else {
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.style.opacity = 1; el.style.transform = 'none';
+  });
+}
+</script>
+</body>
+</html>

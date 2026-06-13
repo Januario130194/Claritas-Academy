@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enroll — Claritas Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Archivo:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0B0D;
+  --panel:#131316;
+  --panel-2:#1A1A1F;
+  --ivory:#ECE6D8;
+  --ivory-dim:#A8A296;
+  --brass:#C8A45C;
+  --brass-soft:rgba(200,164,92,.14);
+  --schematic:#7FB4C9;
+  --line:rgba(236,230,216,.10);
+  --display:'Fraunces',serif;
+  --body:'Archivo',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--ink);color:var(--ivory);
+  font-family:var(--body);font-weight:300;line-height:1.6;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+::selection{background:var(--brass);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  background:rgba(11,11,13,.94);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(14px);
+}
+.logo{display:flex;align-items:center;gap:.7rem}
+.logo svg{width:28px;height:28px}
+.logo-name{font-family:var(--display);font-weight:500;font-size:1.1rem}
+.logo-name em{font-style:italic;color:var(--brass)}
+.back-link{display:flex;align-items:center;gap:.6rem;color:var(--ivory-dim);font-size:.82rem;letter-spacing:.06em;transition:color .25s}
+.back-link:hover{color:var(--ivory)}
+.back-link svg{width:14px;height:14px;stroke:currentColor}
+
+.enroll-hero{padding:4.5rem 3rem 3rem;text-align:center}
+.kicker{display:inline-flex;align-items:center;gap:.9rem;color:var(--brass);margin-bottom:1.2rem}
+.kicker .rule{width:36px;height:1px;background:var(--brass)}
+h1{font-family:var(--display);font-weight:300;font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;letter-spacing:-.01em}
+h1 em{font-style:italic;color:var(--brass);font-weight:400}
+.enroll-hero p{color:var(--ivory-dim);max-width:32rem;margin:1.4rem auto 0}
+
+/* price card */
+.price-wrap{display:flex;justify-content:center;padding:0 3rem}
+.price-card{
+  background:var(--panel);border:1px solid rgba(200,164,92,.35);border-radius:4px;
+  padding:2.4rem 2.8rem;text-align:center;max-width:30rem;width:100%;
+  position:relative;
+}
+.price-card::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:60px;height:2px;background:var(--brass);
+}
+.price-card .amount{
+  font-family:var(--display);font-weight:300;font-size:3.4rem;color:var(--ivory);line-height:1;
+}
+.price-card .amount sup{font-size:1.4rem;color:var(--brass);font-weight:400}
+.price-card .period{color:var(--ivory-dim);margin-top:.4rem}
+.price-card ul{list-style:none;margin:1.8rem 0 0;text-align:left;border-top:1px solid var(--line);padding-top:1.5rem}
+.price-card li{
+  display:flex;gap:.8rem;align-items:baseline;color:var(--ivory-dim);
+  font-size:.92rem;padding:.4rem 0;
+}
+.price-card li::before{content:"—";color:var(--brass);flex-shrink:0}
+
+/* student sign-in */
+.signin{padding:0 3rem 3.5rem;display:flex;justify-content:center}
+.signin-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:1.7rem 2rem;max-width:38rem;width:100%;
+  display:flex;flex-direction:column;gap:1.1rem;
+}
+.signin-kicker{color:var(--schematic);display:block;margin-bottom:.5rem}
+.signin-title{font-family:var(--display);font-weight:300;font-size:1.4rem;line-height:1.2}
+.signin-title em{font-style:italic;color:var(--brass);font-weight:400}
+.signin-sub{color:var(--ivory-dim);font-size:.86rem;margin-top:.4rem}
+.signin-form{display:flex;gap:.7rem}
+.signin-input{
+  flex:1;min-width:0;background:var(--ink);border:1px solid var(--line);border-radius:2px;
+  color:var(--ivory);font-family:var(--mono);font-size:.85rem;letter-spacing:.18em;
+  padding:.85rem 1rem;text-transform:uppercase;transition:border-color .25s;
+}
+.signin-input::placeholder{color:rgba(168,162,150,.45)}
+.signin-input:focus{outline:none;border-color:var(--brass)}
+
+/* registration */
+.register{padding:4rem 3rem 0;display:flex;justify-content:center}
+.register-card{
+  background:var(--panel);border:1px solid rgba(200,164,92,.35);border-radius:4px;
+  padding:2.4rem 2.6rem;max-width:38rem;width:100%;position:relative;
+}
+.register-card::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:60px;height:2px;background:var(--brass);
+}
+.reg-kicker{color:var(--brass);display:block;margin-bottom:.8rem}
+.reg-title{font-family:var(--display);font-weight:300;font-size:1.8rem;line-height:1.15}
+.reg-title em{font-style:italic;color:var(--brass);font-weight:400}
+.reg-sub{color:var(--ivory-dim);font-size:.9rem;margin:.9rem 0 1.6rem}
+.reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.field label{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ivory-dim);margin-bottom:.45rem}
+.field input{
+  width:100%;background:var(--ink);border:1px solid var(--line);border-radius:2px;
+  color:var(--ivory);font-size:.92rem;padding:.8rem .95rem;font-weight:300;
+  font-family:var(--body);transition:border-color .25s;
+}
+.field input:focus{outline:none;border-color:var(--brass)}
+.form-error{display:none;color:#D98A7A;font-size:.82rem;margin-top:1rem}
+.form-error.show{display:block}
+.reg-success{display:none;border-top:1px solid var(--line);margin-top:1.6rem;padding-top:1.5rem}
+.reg-success.show{display:block}
+.reg-success h3{font-family:var(--display);font-weight:400;font-size:1.3rem;color:var(--brass);margin-bottom:.5rem}
+.reg-success p{color:var(--ivory-dim);font-size:.9rem}
+
+/* steps */
+.steps{padding:4.5rem 3rem 1.5rem;max-width:72rem;margin:0 auto}
+.steps h2,.pay h2{font-family:var(--display);font-weight:300;font-size:clamp(1.6rem,2.8vw,2.3rem);margin-bottom:2.4rem;text-align:center}
+.steps h2 em,.pay h2 em{font-style:italic;color:var(--brass);font-weight:400}
+.step-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem}
+.step{border-top:1px solid var(--line);padding-top:1.4rem}
+.step .mono{color:var(--brass);display:block;margin-bottom:.8rem}
+.step h3{font-family:var(--display);font-weight:400;font-size:1.3rem;margin-bottom:.6rem}
+.step p{color:var(--ivory-dim);font-size:.9rem}
+
+/* payment methods */
+.pay{padding:4rem 3rem;max-width:72rem;margin:0 auto}
+.pay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.pay-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;
+  padding:1.9rem 1.8rem;display:flex;flex-direction:column;gap:.9rem;
+  transition:border-color .3s;
+}
+.pay-card:hover{border-color:rgba(200,164,92,.4)}
+.pay-card .pay-icon{width:38px;height:38px}
+.pay-card h3{font-family:var(--display);font-weight:400;font-size:1.25rem}
+.pay-card p{color:var(--ivory-dim);font-size:.88rem;flex:1}
+.pay-detail{
+  font-family:var(--mono);font-size:.78rem;letter-spacing:.06em;
+  background:var(--ink);border:1px solid var(--line);border-radius:2px;
+  padding:.85rem 1rem;color:var(--ivory);line-height:1.7;
+}
+.pay-detail b{color:var(--brass);font-weight:500}
+
+/* whatsapp cta */
+.confirm{padding:4rem 3rem 6rem;text-align:center}
+.confirm h2{font-family:var(--display);font-weight:300;font-size:clamp(1.6rem,2.8vw,2.3rem);margin-bottom:1rem}
+.confirm h2 em{font-style:italic;color:var(--brass);font-weight:400}
+.confirm p{color:var(--ivory-dim);max-width:30rem;margin:0 auto 2rem}
+.wa-btn{
+  display:inline-flex;align-items:center;gap:.8rem;
+  background:var(--brass);color:var(--ink);
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;
+  padding:1rem 2rem;border-radius:2px;border:1px solid var(--brass);
+  transition:background .3s,transform .2s;
+}
+.wa-btn:hover{background:#D9B871;transform:translateY(-2px)}
+.wa-btn svg{width:18px;height:18px;fill:currentColor}
+.confirm .note{font-size:.8rem;color:var(--ivory-dim);opacity:.8;margin-top:1.6rem}
+
+footer{
+  border-top:1px solid var(--line);padding:2.4rem 3rem;display:flex;
+  justify-content:space-between;align-items:center;color:var(--ivory-dim);flex-wrap:wrap;gap:1rem;
+}
+
+.reveal{opacity:0;transform:translateY(24px)}
+
+@media (max-width:900px){
+  nav{padding:1rem 1.4rem}
+  .enroll-hero{padding:3rem 1.4rem 2rem}
+  .price-wrap,.steps,.pay,.confirm{padding-left:1.4rem;padding-right:1.4rem}
+  .step-grid,.pay-grid{grid-template-columns:1fr;gap:1.6rem}
+  footer{padding:2rem 1.4rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="claritas-academy.html" aria-label="Claritas Academy home">
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <circle cx="16" cy="16" r="13" stroke="#C8A45C" stroke-width="1.4"/>
+      <path d="M9 20 L16 9 L23 20" stroke="#ECE6D8" stroke-width="1.4" fill="none"/>
+      <circle cx="16" cy="9" r="2" fill="#C8A45C"/>
+    </svg>
+    <span class="logo-name">Claritas <em>Academy</em></span>
+  </a>
+  <a class="back-link" href="claritas-academy.html">
+    <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M10 3 L5 8 L10 13"/></svg>
+    All courses
+  </a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="enroll-hero">
+  <div class="kicker"><span class="rule"></span><span class="mono">Enrollment</span><span class="rule"></span></div>
+  <h1 class="reveal">Join Claritas <em>Academy</em></h1>
+  <p class="reveal">One membership, every course and every lecture — including all new lectures as they are released.</p>
+</header>
+
+<!-- ============ STUDENT SIGN-IN ============ -->
+<section class="signin" id="signin">
+  <div class="signin-card reveal">
+    <div class="signin-copy">
+      <span class="mono signin-kicker">Already enrolled?</span>
+      <h2 class="signin-title">Sign in with your <em>access code</em></h2>
+      <p class="signin-sub">Enter the code you received on WhatsApp once — it unlocks every course.</p>
+    </div>
+    <form class="signin-form" id="signin-form">
+      <input type="text" id="signin-input" class="signin-input" placeholder="ACCESS CODE"
+             autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Access code">
+      <button type="submit" class="wa-btn" id="signin-btn" style="padding:.85rem 1.6rem">Sign in</button>
+    </form>
+    <p class="form-error" id="signin-error" style="text-align:left"></p>
+  </div>
+</section>
+
+<!-- ============ PRICE ============ -->
+<div class="price-wrap">
+  <div class="price-card reveal">
+    <div class="amount"><sup>$</sup>10</div>
+    <div class="period mono">per month · USD</div>
+    <ul>
+      <li>Full access to all courses and lectures</li>
+      <li>New lectures added every month</li>
+      <li>Watch on phone, tablet, or computer</li>
+      <li>Direct WhatsApp support from the instructor</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ REGISTER ============ -->
+<section class="register" id="register">
+  <div class="register-card reveal">
+    <span class="mono reg-kicker">Step one</span>
+    <h2 class="reg-title">Register your <em>place</em></h2>
+    <p class="reg-sub">Tell us who you are — then pay using any method below. Once we confirm your payment, your personal access code is activated and sent to you on WhatsApp.</p>
+    <form id="reg-form">
+      <div class="reg-grid">
+        <div class="field">
+          <label for="reg-name">Your full name</label>
+          <input type="text" id="reg-name" placeholder="Ana Pereira" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="reg-whatsapp">Your WhatsApp number</label>
+          <input type="tel" id="reg-whatsapp" placeholder="+670 7712 3456" autocomplete="tel" required>
+        </div>
+      </div>
+      <!-- honeypot: hidden from people, catches spam robots -->
+      <input type="text" id="reg-website" name="website" tabindex="-1" autocomplete="off"
+             style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">
+      <button type="submit" class="wa-btn" id="reg-btn" style="margin-top:1.2rem">Register</button>
+      <p class="form-error" id="reg-error"></p>
+    </form>
+    <div class="reg-success" id="reg-success">
+      <h3>You're registered! ✓</h3>
+      <p>Now complete your payment using any method below, then send us your receipt on WhatsApp.
+      As soon as we confirm it, you'll receive your personal access code.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="steps">
+  <h2 class="reveal">How enrollment <em>works</em></h2>
+  <div class="step-grid">
+    <div class="step reveal">
+      <span class="mono">Step 01</span>
+      <h3>Register above</h3>
+      <p>Fill in your name and WhatsApp number. This reserves your place and prepares your personal access code.</p>
+    </div>
+    <div class="step reveal">
+      <span class="mono">Step 02</span>
+      <h3>Pay using any method below</h3>
+      <p>Choose Mosan, bank transfer, or cash — whichever is easiest for you. The price is the same for all.</p>
+    </div>
+    <div class="step reveal">
+      <span class="mono">Step 03</span>
+      <h3>Confirm and receive your code</h3>
+      <p>Send your payment receipt on WhatsApp. Once we confirm it, your code is activated and sent to you — usually within a few hours.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAYMENT METHODS ============ -->
+<section class="pay">
+  <h2 class="reveal">Ways to <em>pay</em></h2>
+  <div class="pay-grid">
+
+    <div class="pay-card reveal">
+      <svg class="pay-icon" viewBox="0 0 38 38" fill="none" aria-hidden="true">
+        <rect x="6" y="3" width="26" height="32" rx="3" stroke="#C8A45C" stroke-width="1.4"/>
+        <line x1="14" y1="30" x2="24" y2="30" stroke="#C8A45C" stroke-width="1.4"/>
+        <path d="M14 14 L19 19 L24 14" stroke="#7FB4C9" stroke-width="1.4"/>
+        <line x1="19" y1="19" x2="19" y2="9" stroke="#7FB4C9" stroke-width="1.4"/>
+      </svg>
+      <h3>Mosan transfer</h3>
+      <p>Send from your Mosan app or through any Mosan agent — available in every district.</p>
+      <div class="pay-detail">
+        Mosan number<br><b>+670 7XXX XXXX</b><br>
+        Name: <b>YOUR NAME HERE</b>
+      </div>
+    </div>
+
+    <div class="pay-card reveal">
+      <svg class="pay-icon" viewBox="0 0 38 38" fill="none" aria-hidden="true">
+        <path d="M5 14 L19 5 L33 14" stroke="#C8A45C" stroke-width="1.4"/>
+        <line x1="8" y1="17" x2="8" y2="28" stroke="#C8A45C" stroke-width="1.4"/>
+        <line x1="15.5" y1="17" x2="15.5" y2="28" stroke="#C8A45C" stroke-width="1.4"/>
+        <line x1="22.5" y1="17" x2="22.5" y2="28" stroke="#C8A45C" stroke-width="1.4"/>
+        <line x1="30" y1="17" x2="30" y2="28" stroke="#C8A45C" stroke-width="1.4"/>
+        <line x1="5" y1="32" x2="33" y2="32" stroke="#7FB4C9" stroke-width="1.4"/>
+      </svg>
+      <h3>Bank transfer</h3>
+      <p>Transfer from your bank account or deposit at a branch. Please write your name in the transfer description.</p>
+      <div class="pay-detail">
+        Bank: <b>BNCTL</b><br>
+        Account: <b>XXXX-XXXX-XXXX</b><br>
+        Name: <b>YOUR NAME HERE</b>
+      </div>
+    </div>
+
+    <div class="pay-card reveal">
+      <svg class="pay-icon" viewBox="0 0 38 38" fill="none" aria-hidden="true">
+        <rect x="4" y="10" width="30" height="18" rx="2" stroke="#C8A45C" stroke-width="1.4"/>
+        <circle cx="19" cy="19" r="5" stroke="#7FB4C9" stroke-width="1.4"/>
+        <circle cx="10" cy="19" r="1.5" fill="#C8A45C"/>
+        <circle cx="28" cy="19" r="1.5" fill="#C8A45C"/>
+      </svg>
+      <h3>Cash in person</h3>
+      <p>Prefer to pay in cash? Message us on WhatsApp first and we will arrange a time and place in Dili.</p>
+      <div class="pay-detail">
+        Location: <b>Dili — by appointment</b><br>
+        Contact us on WhatsApp below
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ WHATSAPP CONFIRM ============ -->
+<section class="confirm">
+  <h2 class="reveal">Paid? <em>Confirm here.</em></h2>
+  <p class="reveal">Send us your payment receipt and your name. You'll receive your access code on WhatsApp, usually within a few hours.</p>
+  <a class="wa-btn reveal" id="wa-link" href="#" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.5 14.2c-.2.7-1.3 1.3-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-2.9-1.3-4.8-4.2-5-4.4-.1-.2-1.2-1.6-1.2-3s.8-2.1 1-2.4c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5s.8 1.9.8 2c.1.1.1.3 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.1.3.7 1.1 1.4 1.8 1 .9 1.8 1.2 2.1 1.3.3.1.4.1.6-.1l.9-1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.4Z"/></svg>
+    Confirm payment on WhatsApp
+  </a>
+  <p class="note reveal">Your access code is personal. Each code is unique to you, so please don't share it.</p>
+</section>
+
+<footer>
+  <span class="logo-name">Claritas <em>Academy</em></span>
+  <span class="mono">Complex made clear</span>
+</footer>
+
+<script>
+/* ===================================================================
+   EDIT THESE TWO SETTINGS
+   -------------------------------------------------------------------
+   1. WHATSAPP_NUMBER — your number in international format,
+      digits only. Example for Timor-Leste: 67077001234
+   2. SHEET_API_URL — the SAME Google Apps Script Web App URL you
+      pasted into course-thermodynamics.html (ends in /exec).
+      Registration is hidden until you set this.
+   =================================================================== */
+const WHATSAPP_NUMBER = "670XXXXXXXX";
+const SHEET_API_URL   = "https://script.google.com/macros/s/AKfycbwjWdeSHNozyGIfzYmV-XE4RImCBc5vY12unLNgepoqlSRrdfO3Uv7IA458KNZBbRIf/exec";
+
+const WHATSAPP_MESSAGE =
+  "Hello! I would like to enroll in Claritas Academy. My name is: ";
+/* =================================================================== */
+
+document.getElementById('wa-link').href =
+  'https://wa.me/' + WHATSAPP_NUMBER +
+  '?text=' + encodeURIComponent(WHATSAPP_MESSAGE);
+
+/* ---------- shared access pass (also read by every course page) ---------- */
+function saveAccessPass(untilISO){
+  const pass = JSON.stringify({
+    ok: true,
+    until: untilISO || null,
+    checked: Date.now()
+  });
+  try { localStorage.setItem('claritas-pass', pass); } catch(e){}
+  try { sessionStorage.setItem('claritas-access','ok'); } catch(e){}
+}
+
+/* ---------- student sign-in ---------- */
+(function signinInit(){
+  const section = document.getElementById('signin');
+  const form  = document.getElementById('signin-form');
+  const input = document.getElementById('signin-input');
+  const btn   = document.getElementById('signin-btn');
+  const err   = document.getElementById('signin-error');
+
+  if (!SHEET_API_URL.startsWith('https://script.google.com/')) {
+    section.style.display = 'none';
+    return;
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const attempt = input.value.replace(/\s/g,'').toUpperCase();
+    if (!attempt) return;
+    err.classList.remove('show');
+    btn.disabled = true;
+    btn.textContent = 'Checking…';
+    try {
+      const res  = await fetch(SHEET_API_URL + '?code=' + encodeURIComponent(attempt));
+      const data = await res.json();
+      if (data.valid) {
+        saveAccessPass(data.until || null);
+        btn.textContent = 'Welcome! Opening courses…';
+        setTimeout(() => { window.location.href = 'claritas-academy.html#courses'; }, 700);
+        return;
+      } else if (data.reason === 'expired') {
+        err.textContent = 'Your access has expired' +
+          (data.until ? ' on ' + new Date(data.until + 'T00:00:00')
+            .toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}) : '') +
+          '. Pay below and confirm on WhatsApp to renew.';
+      } else if (data.reason === 'revoked') {
+        err.textContent = 'This code has been deactivated. Contact us on WhatsApp if you think this is a mistake.';
+      } else {
+        err.textContent = "That code isn't valid. Check your WhatsApp message and try again.";
+      }
+      err.classList.add('show');
+    } catch (e2) {
+      err.textContent = "Couldn't check the code — please check your internet connection and try again.";
+      err.classList.add('show');
+    } finally {
+      btn.disabled = false;
+      if (btn.textContent === 'Checking…') btn.textContent = 'Sign in';
+    }
+  });
+})();
+
+/* ---------- registration form ---------- */
+(function regInit(){
+  const section = document.getElementById('register');
+  const form    = document.getElementById('reg-form');
+  const btn     = document.getElementById('reg-btn');
+  const err     = document.getElementById('reg-error');
+  const success = document.getElementById('reg-success');
+
+  /* hide the whole section until the sheet is connected */
+  if (!SHEET_API_URL.startsWith('https://script.google.com/')) {
+    section.style.display = 'none';
+    return;
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    err.classList.remove('show');
+    const name = document.getElementById('reg-name').value.trim();
+    const wa   = document.getElementById('reg-whatsapp').value.trim();
+    if (name.length < 2 || wa.length < 5) {
+      err.textContent = 'Please fill in your name and WhatsApp number.';
+      err.classList.add('show');
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Registering…';
+    try {
+      const res = await fetch(SHEET_API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          name: name,
+          whatsapp: wa,
+          website: document.getElementById('reg-website').value /* honeypot */
+        })
+      });
+      const data = await res.json();
+      if (data.ok && data.reason === 'already') {
+        form.style.display = 'none';
+        success.querySelector('h3').textContent = "You're already registered ✓";
+        success.querySelector('p').textContent =
+          'We already have a registration for this WhatsApp number. ' +
+          'If you have paid but not received your code, message us on WhatsApp below.';
+        success.classList.add('show');
+      } else if (data.ok) {
+        form.style.display = 'none';
+        success.classList.add('show');
+      } else {
+        err.textContent = 'Registration failed — please try again, or just message us on WhatsApp below.';
+        err.classList.add('show');
+      }
+    } catch (e2) {
+      err.textContent = "Couldn't connect — check your internet and try again, or message us on WhatsApp below.";
+      err.classList.add('show');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Register';
+    }
+  });
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!reduced && typeof gsap !== 'undefined') {
+  const groups = [
+    '.enroll-hero .reveal',
+    '.signin .reveal',
+    '.price-card',
+    '.register .reveal',
+    '.steps .reveal',
+    '.pay .reveal',
+    '.confirm .reveal'
+  ];
+  const tl = gsap.timeline({defaults:{ease:'power3.out'}});
+  tl.from('nav', {y:-20, opacity:0, duration:.6});
+  groups.forEach(sel => {
+    tl.to(sel, {opacity:1, y:0, duration:.75, stagger:.12}, '-=.45');
+  });
+} else {
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.style.opacity = 1; el.style.transform = 'none';
+  });
+}
+</script>
+</body>
+</html>
