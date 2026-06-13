@@ -262,7 +262,7 @@ footer{
 <div class="access-note" id="access-note" role="status"></div>
 
 <nav>
-  <a class="logo" href="claritas-academy.html" aria-label="Claritas Academy home">
+  <a class="logo" href="index.html" aria-label="Claritas Academy home">
     <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
       <circle cx="16" cy="16" r="13" stroke="#C8A45C" stroke-width="1.4"/>
       <path d="M9 20 L16 9 L23 20" stroke="#ECE6D8" stroke-width="1.4" fill="none"/>
@@ -270,7 +270,7 @@ footer{
     </svg>
     <span class="logo-name">Claritas <em>Academy</em></span>
   </a>
-  <a class="back-link" href="claritas-academy.html">
+  <a class="back-link" href="index.html">
     <svg viewBox="0 0 16 16" fill="none" stroke-width="1.5"><path d="M10 3 L5 8 L10 13"/></svg>
     All courses
   </a>
@@ -289,7 +289,8 @@ footer{
   <!-- ============ PLAYER ============ -->
   <main class="stage">
     <div class="player-frame reveal">
-      <video id="player" controls preload="metadata" poster="">
+      <video id="player" controls controlsList="nodownload" disablePictureInPicture
+             oncontextmenu="return false" preload="metadata" poster="">
         Your browser does not support HTML5 video.
       </video>
     </div>
